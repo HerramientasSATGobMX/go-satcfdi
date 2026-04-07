@@ -1,0 +1,7 @@
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+  <s:Body>
+    <SolicitaDescargaEmitidosResponse xmlns="http://DescargaMasivaTerceros.sat.gob.mx">
+      <SolicitaDescargaEmitidosResult IdSolicitud="REQ-EMI-456" CodEstatus="5000" Mensaje="Solicitud Aceptada"></SolicitaDescargaEmitidosResult>
+    </SolicitaDescargaEmitidosResponse>
+  </s:Body>
+</s:Envelope>

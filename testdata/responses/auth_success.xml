@@ -1,0 +1,7 @@
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+  <s:Body>
+    <AutenticaResponse xmlns="http://DescargaMasivaTerceros.gob.mx">
+      <AutenticaResult>test-token</AutenticaResult>
+    </AutenticaResponse>
+  </s:Body>
+</s:Envelope>

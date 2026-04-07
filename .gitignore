@@ -1,0 +1,12 @@
+.DS_Store
+bin/
+dist/
+coverage.out
+*.test
+*.out
+.idea/
+.vscode/
+examples/php/vendor/
+examples/python/.venv/
+*.pyc
+**/__pycache__/

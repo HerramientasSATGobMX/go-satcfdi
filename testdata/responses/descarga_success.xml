@@ -1,0 +1,10 @@
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" xmlns:h="http://DescargaMasivaTerceros.sat.gob.mx">
+  <s:Header>
+    <h:respuesta CodEstatus="5000" Mensaje="Solicitud Aceptada"></h:respuesta>
+  </s:Header>
+  <s:Body>
+    <RespuestaDescargaMasivaTercerosSalida xmlns="http://DescargaMasivaTerceros.sat.gob.mx">
+      <Paquete>UEsDBAoAAAAAAFRFU1Q=</Paquete>
+    </RespuestaDescargaMasivaTercerosSalida>
+  </s:Body>
+</s:Envelope>

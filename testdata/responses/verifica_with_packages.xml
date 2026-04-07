@@ -1,0 +1,10 @@
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+  <s:Body>
+    <VerificaSolicitudDescargaResponse xmlns="http://DescargaMasivaTerceros.sat.gob.mx">
+      <VerificaSolicitudDescargaResult CodEstatus="5000" EstadoSolicitud="3" CodigoEstadoSolicitud="5000" NumeroCFDIs="2" Mensaje="Solicitud Aceptada">
+        <IdsPaquetes>PKG_01</IdsPaquetes>
+        <IdsPaquetes>PKG_02</IdsPaquetes>
+      </VerificaSolicitudDescargaResult>
+    </VerificaSolicitudDescargaResponse>
+  </s:Body>
+</s:Envelope>

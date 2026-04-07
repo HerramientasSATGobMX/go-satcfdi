@@ -1,0 +1,32 @@
+<s:Envelope xmlns:des="http://DescargaMasivaTerceros.sat.gob.mx" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xd="http://www.w3.org/2000/09/xmldsig#">
+    <s:Header/>
+    <s:Body>
+        <des:SolicitaDescargaEmitidos>
+            <des:solicitud RfcSolicitante="AAA010101AAA" TipoSolicitud="Metadata" FechaInicial="2025-02-01T00:00:00" FechaFinal="2025-02-28T23:59:59" RfcEmisor="AAA010101AAA">
+                <des:RfcReceptores><des:RfcReceptor>BBB010101BBB</des:RfcReceptor></des:RfcReceptores>
+            <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <SignedInfo>
+        <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+        <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+        <Reference>
+            <Transforms>
+                <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+            </Transforms>
+            <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+            <DigestValue>LVgGgkB+clbvjbU/08n8lrH4j8k=</DigestValue>
+        </Reference>
+    </SignedInfo>
+    <SignatureValue>LS9uTr4JgTicUYMCJ93S3Pc9OBqgCtsLXG+5kImVzEgQkRkR+ShvI2EJRsopOqdp56/zDZjRBNreZCHVbvi7oRQRBOuVUS/GBfBQNYRjY2z4gb8zUg1m9Zf/MYU1n+EkFJxu+GpJaoHd4KtU3hUCl/gzO4g96AaLfed+PlOS7r/yWjBufhxItnKlJTxwqENcv8Co0Q/C7pmu6mIDYWX1mqSK7bnHcblWWFZbX6fY4LXEyeH/icLBf33MHT+n/MciJV+9jZxwlxD7oAAPY5OYE5WJwCYIyJLi+llOqJRMlMcAaVDdKqilUXuOSe1paDXwfu5pe5ocWeJHsnzUAZ85cjJDbGRkgnTIPT9XJ+xFLeITiOaHjdocdy3wbVOVUwGs6H4mNM4enIfYpiryQygCxEMW7PTFpEi8sJqTF0omSGI4Y7W9ORqbMg/5ZVA7pnvo7kkURrbfYI511u6+ZdGJ0N/KqmtBU62LgqQ7pWBhxl/2OQOwnIlBIXeJOhSC6xmUuZWh4BlDxAtacWyKyKRHB8ZjsWKwR1cHaseHXVMlDINZMq/Y/Fsbj8kGHvOMI/pNtyo67kGsR5PEqE10SrngHA5RoVjkflpHDViSRg9TfeHKBghjvc0dPcH/+mOKiVDgxpf9lJyTxZhYtLBZcRf2pujinRq9lFMiygt5JE9wtIE=</SignatureValue>
+    <KeyInfo>
+        <X509Data>
+            <X509IssuerSerial>
+                <X509IssuerName>C=MX,ST=Baja California,L=Tijuana,O=HerramientasSATGobMX,OU=Engineering,CN=HerramientasSATGobMX SAT Test</X509IssuerName>
+                <X509SerialNumber>557059096557430595434840882899584657573844438465</X509SerialNumber>
+            </X509IssuerSerial>
+            <X509Certificate>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</X509Certificate>
+        </X509Data>
+    </KeyInfo>
+</Signature></des:solicitud>
+        </des:SolicitaDescargaEmitidos>
+    </s:Body>
+</s:Envelope>

@@ -1,0 +1,233 @@
+syntax = "proto3";
+
+package satcfdi.v1;
+
+option go_package = "github.com/herramientassatgobmx/go-satcfdi/proto/satcfdi/v1;satcfdiv1";
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+// SATService exposes the current sat.Client surface as a typed service.
+service SATService {
+  rpc Authenticate(AuthenticateRequest) returns (AuthenticateResponse);
+  rpc ConsultDownload(ConsultDownloadRequest) returns (ConsultDownloadResponse);
+  rpc VerifyDownload(VerifyDownloadRequest) returns (VerifyDownloadResponse);
+  // DownloadPackage is kept for compatibility and small payloads. Large
+  // packages should use StreamDownloadPackage instead.
+  rpc DownloadPackage(DownloadPackageRequest) returns (DownloadPackageResponse);
+  rpc StreamDownloadPackage(StreamDownloadPackageRequest) returns (stream StreamDownloadPackageResponse);
+  rpc ValidateCfdi(ValidateCfdiRequest) returns (ValidateCfdiResponse);
+}
+
+// SATFlowService exposes higher-level stateless orchestration implemented on
+// top of package satflow.
+service SATFlowService {
+  rpc RunDownloadFlow(RunDownloadFlowRequest) returns (RunDownloadFlowResponse);
+}
+
+// SATCredentials contains the same DER inputs already accepted by sat.NewFiel.
+message SATCredentials {
+  bytes certificate_der = 1;
+  bytes private_key_der = 2;
+  string private_key_password = 3;
+}
+
+// CredentialRef identifies an external credential material reference resolved
+// by the server. Exactly one of credentials or credential_ref must be set on
+// signed requests.
+message CredentialRef {
+  string provider = 1;
+  string id = 2;
+}
+
+enum DownloadType {
+  DOWNLOAD_TYPE_UNSPECIFIED = 0;
+  DOWNLOAD_TYPE_RECIBIDOS = 1;
+  DOWNLOAD_TYPE_EMITIDOS = 2;
+}
+
+enum QueryType {
+  QUERY_TYPE_UNSPECIFIED = 0;
+  QUERY_TYPE_CFDI = 1;
+  QUERY_TYPE_METADATA = 2;
+}
+
+enum InvoiceStatus {
+  INVOICE_STATUS_UNSPECIFIED = 0;
+  INVOICE_STATUS_ALL = 1;
+  INVOICE_STATUS_VIGENTE = 2;
+  INVOICE_STATUS_CANCELADO = 3;
+}
+
+// raw_request_status preserves the SAT numeric status code when clients need
+// the original value. The enum remains stable for protobuf consumers.
+enum DownloadRequestStatus {
+  DOWNLOAD_REQUEST_STATUS_UNSPECIFIED = 0;
+  DOWNLOAD_REQUEST_STATUS_ACCEPTED = 1;
+  DOWNLOAD_REQUEST_STATUS_IN_PROGRESS = 2;
+  DOWNLOAD_REQUEST_STATUS_FINISHED = 3;
+  DOWNLOAD_REQUEST_STATUS_ERROR = 4;
+  DOWNLOAD_REQUEST_STATUS_REJECTED = 5;
+  DOWNLOAD_REQUEST_STATUS_EXPIRED = 6;
+  DOWNLOAD_REQUEST_STATUS_TOKEN_INVALID = 7;
+}
+
+enum ErrorCategory {
+  ERROR_CATEGORY_UNSPECIFIED = 0;
+  ERROR_CATEGORY_VALIDATION = 1;
+  ERROR_CATEGORY_CREDENTIALS = 2;
+  ERROR_CATEGORY_AUTHENTICATION = 3;
+  ERROR_CATEGORY_BUSINESS = 4;
+  ERROR_CATEGORY_SOAP = 5;
+  ERROR_CATEGORY_TRANSPORT = 6;
+  ERROR_CATEGORY_INTERNAL = 7;
+  ERROR_CATEGORY_TIMEOUT = 8;
+}
+
+// ServiceErrorDetail is attached as a Connect/gRPC error detail to provide a
+// stable machine-readable shape for SAT failures.
+message ServiceErrorDetail {
+  ErrorCategory category = 1;
+  string sat_code = 2;
+  string sat_message = 3;
+  int32 soap_http_status = 4;
+  string soap_fault_string = 5;
+  bool retryable = 6;
+  string operation = 7;
+  string request_id = 8;
+  string package_id = 9;
+  string sat_status_code = 10;
+  string request_status_code = 11;
+}
+
+message AuthenticateRequest {
+  SATCredentials credentials = 1;
+  CredentialRef credential_ref = 2;
+}
+
+message AuthenticateResponse {
+  string access_token = 1;
+}
+
+message ConsultDownloadRequest {
+  SATCredentials credentials = 1;
+  string access_token = 2;
+  string rfc_solicitante = 3;
+  google.protobuf.Timestamp fecha_inicial = 4;
+  google.protobuf.Timestamp fecha_final = 5;
+  DownloadType download_type = 6;
+  QueryType query_type = 7;
+  repeated string counterpart_rfc = 8;
+  string invoice_type = 9;
+  InvoiceStatus invoice_status = 10;
+  string third_party_rfc = 11;
+  string complemento = 12;
+  string uuid = 13;
+  CredentialRef credential_ref = 14;
+}
+
+message ConsultDownloadResponse {
+  string sat_status_code = 1;
+  string sat_message = 2;
+  string request_id = 3;
+}
+
+message VerifyDownloadRequest {
+  SATCredentials credentials = 1;
+  string access_token = 2;
+  string rfc_solicitante = 3;
+  string request_id = 4;
+  CredentialRef credential_ref = 5;
+}
+
+message VerifyDownloadResponse {
+  string sat_status_code = 1;
+  DownloadRequestStatus request_status = 2;
+  string request_status_code = 3;
+  int32 cfdi_count = 4;
+  string sat_message = 5;
+  repeated string package_ids = 6;
+  int32 raw_request_status = 7;
+}
+
+message DownloadPackageRequest {
+  SATCredentials credentials = 1;
+  string access_token = 2;
+  string rfc_solicitante = 3;
+  string package_id = 4;
+  CredentialRef credential_ref = 5;
+}
+
+message DownloadPackageResponse {
+  string sat_status_code = 1;
+  string sat_message = 2;
+  string package_id = 3;
+  string package_base64 = 4;
+  bytes package_bytes = 5;
+}
+
+message StreamDownloadPackageRequest {
+  SATCredentials credentials = 1;
+  string access_token = 2;
+  string rfc_solicitante = 3;
+  string package_id = 4;
+  CredentialRef credential_ref = 5;
+}
+
+message StreamDownloadPackageResponse {
+  string package_id = 1;
+  int64 offset = 2;
+  bytes data = 3;
+  bool eof = 4;
+  int64 total_bytes = 5;
+  string sat_status_code = 6;
+  string sat_message = 7;
+}
+
+message PollPolicy {
+  google.protobuf.Duration interval = 1;
+  int32 max_attempts = 2;
+}
+
+message RunDownloadFlowRequest {
+  SATCredentials credentials = 1;
+  CredentialRef credential_ref = 2;
+  string rfc_solicitante = 3;
+  google.protobuf.Timestamp fecha_inicial = 4;
+  google.protobuf.Timestamp fecha_final = 5;
+  DownloadType download_type = 6;
+  QueryType query_type = 7;
+  repeated string counterpart_rfc = 8;
+  string invoice_type = 9;
+  InvoiceStatus invoice_status = 10;
+  string third_party_rfc = 11;
+  string complemento = 12;
+  string uuid = 13;
+  PollPolicy poll_policy = 14;
+}
+
+message RunDownloadFlowResponse {
+  string request_id = 1;
+  string submit_sat_status_code = 2;
+  string submit_sat_message = 3;
+  string verify_sat_status_code = 4;
+  DownloadRequestStatus request_status = 5;
+  string request_status_code = 6;
+  int32 cfdi_count = 7;
+  string verify_sat_message = 8;
+  repeated string package_ids = 9;
+  int32 raw_request_status = 10;
+}
+
+message ValidateCfdiRequest {
+  string rfc_emisor = 1;
+  string rfc_receptor = 2;
+  string total = 3;
+  string uuid = 4;
+}
+
+message ValidateCfdiResponse {
+  string codigo_estatus = 1;
+  string es_cancelable = 2;
+  string estado = 3;
+}

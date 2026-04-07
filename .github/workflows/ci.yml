@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version:
+          - '1.25.x'
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+          cache: true
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Configurar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer:v2
+
+      - name: Configurar Buf
+        uses: bufbuild/buf-setup-action@v1
+
+      - name: Verificar formato
+        run: |
+          test -z "$(gofmt -l .)"
+
+      - name: Ejecutar `buf lint`
+        run: buf lint
+
+      - name: Verificar compatibilidad con Buf
+        run: |
+          base_branch=origin/main
+          if ! git show-ref --verify --quiet refs/remotes/origin/main; then
+            base_branch=origin/master
+          fi
+          buf breaking --against ".git#branch=${base_branch}"
+
+      - name: Verificar protobuf generado
+        run: |
+          ./scripts/generate-proto.sh
+          git diff --exit-code -- proto/
+
+      - name: Verificar clientes externos generados
+        run: |
+          chmod +x ./scripts/generate-example-clients.sh
+          ./scripts/generate-example-clients.sh
+          git diff --exit-code -- examples/python/generated examples/php/generated
+
+      - name: Instalar dependencias de ejemplo Python
+        run: pip install -r examples/python/requirements.txt
+
+      - name: Verificar ejemplos de Python
+        run: |
+          python -m py_compile examples/python/*.py examples/python/generated/satcfdi/v1/*.py
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, "examples/python/generated")
+          from satcfdi.v1 import service_pb2, service_pb2_grpc
+          assert service_pb2 is not None
+          assert service_pb2_grpc is not None
+          PY
+
+      - name: Instalar dependencias de ejemplo PHP
+        run: composer install --working-dir examples/php --no-interaction --prefer-dist --ignore-platform-req=ext-grpc
+
+      - name: Verificar ejemplos de PHP
+        run: |
+          php -l examples/php/run_download_flow.php
+          php -l examples/php/src/Common.php
+          php -l examples/php/src/GrpcFactory.php
+          php -l examples/php/src/SATServiceClient.php
+          php -l examples/php/src/SATFlowServiceClient.php
+          php -l examples/php/src/Rpc.php
+
+      - name: Ejecutar `go vet`
+        run: go vet ./...
+
+      - name: Ejecutar `go test`
+        run: go test ./...
+
+      - name: Ejecutar `go test -race`
+        run: go test -race ./...

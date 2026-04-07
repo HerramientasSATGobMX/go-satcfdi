@@ -1,0 +1,16 @@
+{
+  "name": "herramientassatgobmx/go-satcfdi-examples-php",
+  "type": "project",
+  "require": {
+    "google/protobuf": "^4.31",
+    "grpc/grpc": "^1.76"
+  },
+  "autoload": {
+    "psr-4": {
+      "SatcfdiExamples\\": "src/",
+      "Satcfdi\\V1\\": "generated/Satcfdi/V1/",
+      "GPBMetadata\\Satcfdi\\V1\\": "generated/GPBMetadata/Satcfdi/V1/"
+    }
+  }
+}
+

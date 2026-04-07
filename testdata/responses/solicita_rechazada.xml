@@ -1,0 +1,7 @@
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+  <s:Body>
+    <SolicitaDescargaRecibidosResponse xmlns="http://DescargaMasivaTerceros.sat.gob.mx">
+      <SolicitaDescargaRecibidosResult IdSolicitud="" CodEstatus="300" Mensaje="Solicitud rechazada"></SolicitaDescargaRecibidosResult>
+    </SolicitaDescargaRecibidosResponse>
+  </s:Body>
+</s:Envelope>

@@ -1,0 +1,3 @@
+<des:SolicitaDescargaRecibidos xmlns:des="http://DescargaMasivaTerceros.sat.gob.mx">
+            <des:solicitud FechaFinal="2025-01-31T23:59:59" FechaInicial="2025-01-01T00:00:01" RfcReceptor="XAXX010101000" RfcSolicitante="XAXX010101000" TipoSolicitud="CFDI"></des:solicitud>
+        </des:SolicitaDescargaRecibidos>
